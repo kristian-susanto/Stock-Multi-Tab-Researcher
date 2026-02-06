@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -105,25 +105,25 @@
       <h2>Stock Research</h2>
 
       <div class="input-group">
-        <label>Kode Bursa</label>
-        <input type="text" id="bursa" placeholder="Contoh: IDX" value="IDX" />
+        <label>Exchange Code</label>
+        <input type="text" id="bursa" placeholder="Example: IDX" value="IDX" />
       </div>
 
       <div class="input-group">
-        <label>Kode Saham</label>
-        <input type="text" id="saham" placeholder="Contoh: BBCA" />
+        <label>Ticker Symbol</label>
+        <input type="text" id="saham" placeholder="Example: AAPL" />
       </div>
 
-      <button class="btn-main" onclick="processSearch()">Buka Semua Tab</button>
+      <button class="btn-main" onclick="processSearch()">Open All Tabs</button>
 
       <div id="linkContainer">
-        <label>Link Manual (Jika Pop-up Terblokir):</label>
+        <label>Manual Links (If Pop-ups Blocked):</label>
         <div id="linkList"></div>
       </div>
 
-      <p class="hint">
-        Jika tab tidak muncul, izinkan <b>Pop-ups</b> di browser Anda atau klik
-        link manual di atas.
+      <p id="hintText" class="hint" style="display: none">
+        If tabs don't appear, please <b>Allow Pop-ups</b> in your browser
+        settings or click the manual links above.
       </p>
     </div>
 
@@ -139,34 +139,37 @@
           .toUpperCase();
 
         if (!bursa || !saham) {
-          alert("Harap isi Kode Bursa dan Kode Saham!");
+          alert("Please enter both Exchange Code and Ticker Symbol!");
           return;
         }
 
-        // Definisi Link
+        // Show hint text when button is clicked
+        document.getElementById("hintText").style.display = "block";
+
+        // Link Definitions
         const targets = [
           {
-            name: "📰 Berita Terbaru (Google)",
+            name: "📰 Latest News (Google)",
             url: `https://www.google.com/search?q=${bursa}:%20${saham}&tbm=nws&tbs=sbd:1`,
           },
           {
-            name: "📊 Financial Overview (TradingView)",
-            url: `https://www.tradingview.com/symbols/${bursa}-${saham}/`,
+            name: "📊 Financial Stats & Ratios (TradingView)",
+            url: `https://www.tradingview.com/symbols/${bursa}-${saham}/financials-statistics-and-ratios/`,
           },
           {
-            name: "⏳ Timeframe 10 Tahun (TradingView)",
+            name: "⏳ 10-Year Timeframe (TradingView)",
             url: `https://www.tradingview.com/symbols/${bursa}-${saham}/?timeframe=120M`,
           },
         ];
 
-        // 1. Coba buka otomatis
+        // 1. Try automatic opening
         targets.forEach((item, index) => {
           setTimeout(() => {
             window.open(item.url, "_blank");
-          }, index * 400); // Jeda 0.4 detik tiap tab agar browser tidak panik
+          }, index * 400); // 0.4s delay between tabs to avoid browser blocking
         });
 
-        // 2. Tampilkan link manual sebagai cadangan
+        // 2. Display manual links as backup
         const container = document.getElementById("linkContainer");
         const list = document.getElementById("linkList");
         list.innerHTML = "";
