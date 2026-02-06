@@ -5,14 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Stock Multi-Tab Researcher</title>
     <style>
+      /* Reset & Base Styles */
+      * {
+        box-sizing: border-box;
+      }
       body {
         font-family: "Segoe UI", Arial, sans-serif;
         background-color: #eef2f3;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
+        padding: 20px;
       }
       .card {
         background: white;
@@ -20,7 +25,7 @@
         border-radius: 16px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         width: 100%;
-        max-width: 400px;
+        max-width: 450px;
       }
       h2 {
         text-align: center;
@@ -39,7 +44,7 @@
       }
       input {
         width: 100%;
-        padding: 12px;
+        padding: 14px;
         border: 2px solid #ddd;
         border-radius: 8px;
         box-sizing: border-box;
@@ -67,12 +72,12 @@
         font-weight: bold;
         margin-top: 10px;
         transition: 0.3s;
+        -webkit-tap-highlight-color: transparent;
       }
       .btn-main:hover {
         background-color: #2980b9;
         transform: translateY(-1px);
       }
-
       #linkContainer {
         margin-top: 20px;
         padding-top: 20px;
@@ -101,20 +106,41 @@
         text-align: center;
         margin-top: 15px;
       }
+      /* Responsive Adjustments for Small Screens */
+      @media (max-width: 480px) {
+        .card {
+          padding: 20px;
+        }
+
+        h2 {
+          font-size: 1.2rem;
+        }
+
+        input,
+        .btn-main {
+          font-size: 14px;
+          padding: 12px;
+        }
+      }
     </style>
   </head>
   <body>
     <div class="card">
-      <h2>Stock-Multi-Tab-Researcher</h2>
+      <h2>Stock Multi-Tab Researcher</h2>
 
       <div class="input-group">
         <label>Exchange Code</label>
-        <input type="text" id="bursa" placeholder="Example: SSE" value="SSE" />
+        <input
+          type="text"
+          id="exchange_code"
+          placeholder="Example: SSE"
+          value="SSE"
+        />
       </div>
 
       <div class="input-group">
         <label>Ticker Symbol</label>
-        <input type="text" id="saham" placeholder="Example: 601398" />
+        <input type="text" id="ticker_symbol" placeholder="Example: 601398" />
       </div>
 
       <button class="btn-main" onclick="processSearch()">Open All Tabs</button>
@@ -131,17 +157,36 @@
     </div>
 
     <script>
+      // Function to detect Enter key on input
+      document
+        .getElementById("ticker_symbol")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault(); // Prevent default form submit if any
+            processSearch();
+          }
+        });
+
+      document
+        .getElementById("exchange_code")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            processSearch();
+          }
+        });
+
       function processSearch() {
-        const bursa = document
-          .getElementById("bursa")
+        const exchange_code = document
+          .getElementById("exchange_code")
           .value.trim()
           .toUpperCase();
-        const saham = document
-          .getElementById("saham")
+        const ticker_symbol = document
+          .getElementById("ticker_symbol")
           .value.trim()
           .toUpperCase();
 
-        if (!bursa || !saham) {
+        if (!exchange_code || !ticker_symbol) {
           alert("Please enter both Exchange Code and Ticker Symbol!");
           return;
         }
@@ -153,15 +198,15 @@
         const targets = [
           {
             name: "📰 Latest News (Google)",
-            url: `https://www.google.com/search?q=${bursa}:%20${saham}&tbm=nws&tbs=sbd:1`,
+            url: `https://www.google.com/search?q=${exchange_code}:%20${ticker_symbol}&tbm=nws&tbs=sbd:1`,
           },
           {
             name: "📊 Financial Statistics & Ratios (TradingView)",
-            url: `https://www.tradingview.com/symbols/${bursa}-${saham}/financials-statistics-and-ratios/`,
+            url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-statistics-and-ratios/`,
           },
           {
             name: "⏳ 10-Year Timeframe (TradingView)",
-            url: `https://www.tradingview.com/symbols/${bursa}-${saham}/?timeframe=120M`,
+            url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/?timeframe=120M`,
           },
         ];
 
@@ -169,7 +214,7 @@
         targets.forEach((item, index) => {
           setTimeout(() => {
             window.open(item.url, "_blank");
-          }, index * 400); // 0.4s delay between tabs to avoid browser blocking
+          }, index * 500); // 0.5s delay between tabs to avoid browser blocking
         });
 
         // 2. Display manual links as backup
