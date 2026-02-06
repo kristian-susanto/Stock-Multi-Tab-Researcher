@@ -47,6 +47,9 @@
         transition: 0.3s;
         text-transform: uppercase;
       }
+      input::placeholder {
+        text-transform: none;
+      }
       input:focus {
         border-color: #3498db;
         outline: none;
@@ -106,12 +109,12 @@
 
       <div class="input-group">
         <label>Exchange Code</label>
-        <input type="text" id="bursa" placeholder="Example: IDX" value="IDX" />
+        <input type="text" id="bursa" placeholder="Example: SSE" value="SSE" />
       </div>
 
       <div class="input-group">
         <label>Ticker Symbol</label>
-        <input type="text" id="saham" placeholder="Example: AAPL" />
+        <input type="text" id="saham" placeholder="Example: 601398" />
       </div>
 
       <button class="btn-main" onclick="processSearch()">Open All Tabs</button>

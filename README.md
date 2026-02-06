@@ -19,7 +19,7 @@
 ## 🚀 How to Use
 
 1. **Open File:** Run this `.html` file in your preferred browser (Chrome, Edge, Firefox, etc.).
-2. **Enter Stock Code:** Enter the target stock exchange code (Example: `SZSE` for China, `SGX` for the Singapore market).
+2. **Enter Stock Code:** Enter the target stock exchange code (Example: `SSE` for China, `SGX` for the Singapore market).
 3. **Enter Stock Code:** Enter the stock ticker you want to analyze (Example: `601398`, `700`, or `D05`).
 4. **Click "Open All Tabs":** The browser will attempt to open 3 new tabs automatically.
 5. **Check Pop-ups:** If the tab won't open, make sure you've allowed the "Pop-up Blocked" notification in your browser's address bar.
