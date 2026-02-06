@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Multi-Tab Researcher</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background-color: #eef2f3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .card {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+      }
+      h2 {
+        text-align: center;
+        color: #2c3e50;
+        margin-bottom: 25px;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 14px;
+        color: #555;
+      }
+      input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 16px;
+        transition: 0.3s;
+        text-transform: uppercase;
+      }
+      input:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      .btn-main {
+        width: 100%;
+        padding: 14px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 10px;
+        transition: 0.3s;
+      }
+      .btn-main:hover {
+        background-color: #2980b9;
+        transform: translateY(-1px);
+      }
+
+      #linkContainer {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        display: none;
+      }
+      .link-item {
+        display: block;
+        background: #f8f9fa;
+        margin-bottom: 8px;
+        padding: 10px;
+        text-decoration: none;
+        color: #34495e;
+        border-radius: 6px;
+        font-size: 14px;
+        border-left: 4px solid #3498db;
+        transition: 0.2s;
+      }
+      .link-item:hover {
+        background: #edf2f7;
+        color: #2980b9;
+      }
+      .hint {
+        font-size: 11px;
+        color: #888;
+        text-align: center;
+        margin-top: 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Stock Research</h2>
+
+      <div class="input-group">
+        <label>Kode Bursa</label>
+        <input type="text" id="bursa" placeholder="Contoh: IDX" value="IDX" />
+      </div>
+
+      <div class="input-group">
+        <label>Kode Saham</label>
+        <input type="text" id="saham" placeholder="Contoh: BBCA" />
+      </div>
+
+      <button class="btn-main" onclick="processSearch()">Buka Semua Tab</button>
+
+      <div id="linkContainer">
+        <label>Link Manual (Jika Pop-up Terblokir):</label>
+        <div id="linkList"></div>
+      </div>
+
+      <p class="hint">
+        Jika tab tidak muncul, izinkan <b>Pop-ups</b> di browser Anda atau klik
+        link manual di atas.
+      </p>
+    </div>
+
+    <script>
+      function processSearch() {
+        const bursa = document
+          .getElementById("bursa")
+          .value.trim()
+          .toUpperCase();
+        const saham = document
+          .getElementById("saham")
+          .value.trim()
+          .toUpperCase();
+
+        if (!bursa || !saham) {
+          alert("Harap isi Kode Bursa dan Kode Saham!");
+          return;
+        }
+
+        // Definisi Link
+        const targets = [
+          {
+            name: "📰 Berita Terbaru (Google)",
+            url: `https://www.google.com/search?q=${bursa}:%20${saham}&tbm=nws&tbs=sbd:1`,
+          },
+          {
+            name: "📊 Financial Overview (TradingView)",
+            url: `https://www.tradingview.com/symbols/${bursa}-${saham}/`,
+          },
+          {
+            name: "⏳ Timeframe 10 Tahun (TradingView)",
+            url: `https://www.tradingview.com/symbols/${bursa}-${saham}/?timeframe=120M`,
+          },
+        ];
+
+        // 1. Coba buka otomatis
+        targets.forEach((item, index) => {
+          setTimeout(() => {
+            window.open(item.url, "_blank");
+          }, index * 400); // Jeda 0.4 detik tiap tab agar browser tidak panik
+        });
+
+        // 2. Tampilkan link manual sebagai cadangan
+        const container = document.getElementById("linkContainer");
+        const list = document.getElementById("linkList");
+        list.innerHTML = "";
+        container.style.display = "block";
+
+        targets.forEach((item) => {
+          const a = document.createElement("a");
+          a.href = item.url;
+          a.target = "_blank";
+          a.className = "link-item";
+          a.innerText = item.name;
+          list.appendChild(a);
+        });
+      }
+    </script>
+  </body>
+</html>
