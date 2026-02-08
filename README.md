@@ -4,7 +4,7 @@
 
 ## ✨ Key Features
 
-- **One-Click Analysis:** Opens various research sources (Google News & TradingView) in one click.
+- **One-Click Analysis:** Opens various research sources in one click.
 - **Smart URL Mapping:** Automatically converts exchange and ticker inputs into valid URLs, supporting cross-global capital market searches based on user input.
 - **Anti-Blocking Mechanism:** Equipped with a timeout between tab openings to minimize pop-up blocking by browsers.
 - **Manual Backup Links:** Provides a list of manual links in case the automatic feature is blocked by browser security settings.
