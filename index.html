@@ -197,6 +197,7 @@
       });
 
       function processSearch() {
+        // 1. Ambil nilai teks dari input
         let exchange = exchangeInput.value.trim();
         let ticker = tickerInput.value.trim();
         const source = document.querySelector(
@@ -214,43 +215,43 @@
           exchange = exchange.toUpperCase();
           ticker = ticker.toUpperCase();
 
+          // Gunakan variabel 'exchange' dan 'ticker', bukan ID elemen
           targets = [
             {
-              name: "📰 Latest News (Google)",
-              url: `https://www.google.com/search?q=${exchange_code}:%20${ticker_symbol}&tbm=nws&tbs=sbd:1`,
+              name: "📰 Latest News",
+              url: `https://www.google.com/search?q=${exchange}:%20${ticker}&tbm=nws`,
             },
             {
-              name: "📊 Financial Statistics & Ratios (TradingView)",
-              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-statistics-and-ratios/`,
+              name: "📊 Financial Stats",
+              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-statistics-and-ratios/`,
             },
             {
-              name: "🏢 Overview (TradingView)",
-              // url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/`,
-              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/`,
+              name: "🏢 Overview",
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
             },
             {
-              name: "⏳ Historical Data (TradingView)",
-              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/?timeframe=120M`,
+              name: "⏳ Historical Data",
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange}-${ticker}/?timeframe=120M`,
             },
             {
-              name: "📑 Financials Income Statement (TradingView)",
-              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-income-statement/`,
+              name: "📑 Income Statement",
+              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-income-statement/`,
             },
             {
-              name: "⚖️ Financials Balance Sheet (TradingView)",
-              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-balance-sheet/`,
+              name: "⚖️ Balance Sheet",
+              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-balance-sheet/`,
             },
             {
-              name: "🔄 Financials Cash Flow (TradingView)",
-              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-cash-flow/`,
+              name: "🔄 Cash Flow",
+              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-cash-flow/`,
             },
             {
-              name: "💰 Financials Revenue (TradingView)",
-              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-revenue/`,
+              name: "💰 Revenue",
+              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-revenue/`,
             },
             {
-              name: "💸 Financials Dividends (TradingView)",
-              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-dividends/`,
+              name: "💸 Dividends",
+              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-dividends/`,
             },
           ];
         } else {
@@ -259,45 +260,45 @@
 
           targets = [
             {
-              name: "📰 Latest News (Google)",
-              url: `https://www.google.com/search?q=${exchange_code}:%20${ticker_symbol}&tbm=nws&tbs=sbd:1`,
+              name: "📰 Latest News",
+              url: `https://www.google.com/search?q=${exchange}:%20${ticker}&tbm=nws`,
             },
             {
-              name: "📊 Financial Ratios (Stock Analysis)",
-              url: `https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/financials/ratios/?p=quarterly`,
+              name: "📊 Financial Ratios",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/ratios/?p=quarterly`,
             },
             {
-              name: "🏢 Overview (Stock Analysis)",
-              // url: `https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/`,
-              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/`,
+              name: "🏢 Overview",
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange}/${ticker}/`,
             },
             {
-              name: "⏳ Historical Data (Stock Analysis)",
-              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/history/`,
+              name: "⏳ Historical Data",
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange}/${ticker}/history/`,
             },
             {
-              name: "📑 Financials Income Statement (Stock Analysis)",
-              url: `https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/financials/?p=quarterly`,
+              name: "📑 Income Statement",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/?p=quarterly`,
             },
             {
-              name: "⚖️ Financials Balance Sheet (Stock Analysis)",
-              url: `https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/financials/balance-sheet/?p=quarterly`,
+              name: "⚖️ Balance Sheet",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/balance-sheet/?p=quarterly`,
             },
             {
-              name: "🔄 Financials Cash Flow (Stock Analysis)",
-              url: `https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/financials/cash-flow-statement/?p=quarterly`,
+              name: "🔄 Cash Flow",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/cash-flow-statement/?p=quarterly`,
             },
             {
-              name: "💰 Financials Revenue (Stock Analysis)",
-              url: `https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/financials/metrics/?p=quarterly`,
+              name: "💰 Revenue",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/metrics/?p=quarterly`,
             },
             {
-              name: "💸 Financials Dividends (Stock Analysis)",
-              url: `https://www.stockanalysis.com/quote/${exchange_code}/${ticker_symbol}/dividend/`,
+              name: "💸 Dividends",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/dividend/`,
             },
           ];
         }
 
+        // Tampilkan link dan buka tab
         document.getElementById("hintText").style.display = "block";
         const container = document.getElementById("linkContainer");
         const list = document.getElementById("linkList");
