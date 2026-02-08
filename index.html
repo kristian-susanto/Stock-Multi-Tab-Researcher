@@ -42,22 +42,38 @@
         font-size: 14px;
         color: #555;
       }
-      input {
+      input[type="text"] {
         width: 100%;
         padding: 14px;
         border: 2px solid #ddd;
         border-radius: 8px;
-        box-sizing: border-box;
         font-size: 16px;
         transition: 0.3s;
-        text-transform: uppercase;
       }
-      input::placeholder {
-        text-transform: none;
-      }
-      input:focus {
+      input[type="text"]:focus {
         border-color: #3498db;
         outline: none;
+      }
+
+      /* Radio Group Styles */
+      .radio-group {
+        display: flex;
+        gap: 15px;
+        margin-top: 5px;
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 8px;
+      }
+      .radio-option {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+      .radio-option input {
+        margin-right: 6px;
+        cursor: pointer;
       }
 
       .btn-main {
@@ -70,9 +86,8 @@
         cursor: pointer;
         font-size: 16px;
         font-weight: bold;
-        margin-top: 10px;
+        margin-top: 15px;
         transition: 0.3s;
-        -webkit-tap-highlight-color: transparent;
       }
       .btn-main:hover {
         background-color: #2980b9;
@@ -106,22 +121,6 @@
         text-align: center;
         margin-top: 15px;
       }
-      /* Responsive Adjustments for Small Screens */
-      @media (max-width: 480px) {
-        .card {
-          padding: 20px;
-        }
-
-        h2 {
-          font-size: 1.2rem;
-        }
-
-        input,
-        .btn-main {
-          font-size: 14px;
-          padding: 12px;
-        }
-      }
     </style>
   </head>
   <body>
@@ -130,12 +129,7 @@
 
       <div class="input-group">
         <label>Exchange Code</label>
-        <input
-          type="text"
-          id="exchange_code"
-          placeholder="Example: SSE"
-          value="SSE"
-        />
+        <input type="text" id="exchange_code" placeholder="Example: SSE" />
       </div>
 
       <div class="input-group">
@@ -143,116 +137,189 @@
         <input type="text" id="ticker_symbol" placeholder="Example: 601398" />
       </div>
 
+      <div class="input-group">
+        <label>Data Source Support</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="source" value="tradingview" checked />
+            TradingView
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="source" value="stockanalysis" /> Stock
+            Analysis
+          </label>
+        </div>
+      </div>
+
       <button class="btn-main" onclick="processSearch()">Open All Tabs</button>
 
       <div id="linkContainer">
-        <label>Manual Links (If Pop-ups Blocked):</label>
+        <label>Manual Links:</label>
         <div id="linkList"></div>
       </div>
 
       <p id="hintText" class="hint" style="display: none">
-        If tabs don't appear, please <b>Allow Pop-ups</b> in your browser
-        settings or click the manual links above.
+        If tabs don't appear, please <b>Allow Pop-ups</b> in your settings.
       </p>
     </div>
 
     <script>
-      // Function to detect Enter key on input
-      document
-        .getElementById("ticker_symbol")
-        .addEventListener("keypress", function (event) {
-          if (event.key === "Enter") {
-            event.preventDefault(); // Prevent default form submit if any
-            processSearch();
-          }
-        });
+      const exchangeInput = document.getElementById("exchange_code");
+      const tickerInput = document.getElementById("ticker_symbol");
+      const radioButtons = document.querySelectorAll('input[name="source"]');
 
-      document
-        .getElementById("exchange_code")
-        .addEventListener("keypress", function (event) {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            processSearch();
-          }
+      // Fungsi untuk update placeholder berdasarkan pilihan radio button
+      function updatePlaceholders() {
+        const selectedSource = document.querySelector(
+          'input[name="source"]:checked',
+        ).value;
+
+        if (selectedSource === "tradingview") {
+          exchangeInput.placeholder = "Example: SSE";
+          tickerInput.placeholder = "Example: 601398";
+        } else {
+          // Placeholder menjadi kecil untuk Stock Analysis
+          exchangeInput.placeholder = "Example: sha";
+          tickerInput.placeholder = "Example: 601398";
+        }
+      }
+
+      // Jalankan fungsi saat radio button diklik
+      radioButtons.forEach((radio) => {
+        radio.addEventListener("change", updatePlaceholders);
+      });
+
+      // Support Enter Key
+      [tickerInput, exchangeInput].forEach((el) => {
+        el.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") processSearch();
         });
+      });
 
       function processSearch() {
-        const exchange_code = document
-          .getElementById("exchange_code")
-          .value.trim()
-          .toUpperCase();
-        const ticker_symbol = document
-          .getElementById("ticker_symbol")
-          .value.trim()
-          .toUpperCase();
+        let exchange = exchangeInput.value.trim();
+        let ticker = tickerInput.value.trim();
+        const source = document.querySelector(
+          'input[name="source"]:checked',
+        ).value;
 
-        if (!exchange_code || !ticker_symbol) {
-          alert("Please enter both Exchange Code and Ticker Symbol!");
+        if (!exchange || !ticker) {
+          alert("Please fill in both fields!");
           return;
         }
 
-        // Show hint text when button is clicked
+        let targets = [];
+
+        if (source === "tradingview") {
+          exchange = exchange.toUpperCase();
+          ticker = ticker.toUpperCase();
+
+          targets = [
+            {
+              name: "📰 Latest News (Google)",
+              url: `https://www.google.com/search?q=${exchange_code}:%20${ticker_symbol}&tbm=nws&tbs=sbd:1`,
+            },
+            {
+              name: "📊 Financial Statistics & Ratios (TradingView)",
+              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-statistics-and-ratios/`,
+            },
+            {
+              name: "🏢 Overview (TradingView)",
+              // url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/`,
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/`,
+            },
+            {
+              name: "⏳ Historical Data (TradingView)",
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/?timeframe=120M`,
+            },
+            {
+              name: "📑 Financials Income Statement (TradingView)",
+              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-income-statement/`,
+            },
+            {
+              name: "⚖️ Financials Balance Sheet (TradingView)",
+              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-balance-sheet/`,
+            },
+            {
+              name: "🔄 Financials Cash Flow (TradingView)",
+              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-cash-flow/`,
+            },
+            {
+              name: "💰 Financials Revenue (TradingView)",
+              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-revenue/`,
+            },
+            {
+              name: "💸 Financials Dividends (TradingView)",
+              url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-dividends/`,
+            },
+          ];
+        } else {
+          exchange = exchange.toLowerCase();
+          ticker = ticker.toLowerCase();
+
+          targets = [
+            {
+              name: "📰 Latest News (Google)",
+              url: `https://www.google.com/search?q=${exchange_code}:%20${ticker_symbol}&tbm=nws&tbs=sbd:1`,
+            },
+            {
+              name: "📊 Financial Ratios (Stock Analysis)",
+              url: `https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/financials/ratios/?p=quarterly`,
+            },
+            {
+              name: "🏢 Overview (Stock Analysis)",
+              // url: `https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/`,
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/`,
+            },
+            {
+              name: "⏳ Historical Data (Stock Analysis)",
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/history/`,
+            },
+            {
+              name: "📑 Financials Income Statement (Stock Analysis)",
+              url: `https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/financials/?p=quarterly`,
+            },
+            {
+              name: "⚖️ Financials Balance Sheet (Stock Analysis)",
+              url: `https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/financials/balance-sheet/?p=quarterly`,
+            },
+            {
+              name: "🔄 Financials Cash Flow (Stock Analysis)",
+              url: `https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/financials/cash-flow-statement/?p=quarterly`,
+            },
+            {
+              name: "💰 Financials Revenue (Stock Analysis)",
+              url: `https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/financials/metrics/?p=quarterly`,
+            },
+            {
+              name: "💸 Financials Dividends (Stock Analysis)",
+              url: `https://www.stockanalysis.com/quote/${exchange_code}-${ticker_symbol}/dividend/`,
+            },
+          ];
+        }
+
         document.getElementById("hintText").style.display = "block";
-
-        // Link Definitions
-        const targets = [
-          {
-            name: "📰 Latest News (Google)",
-            url: `https://www.google.com/search?q=${exchange_code}:%20${ticker_symbol}&tbm=nws&tbs=sbd:1`,
-          },
-          {
-            name: "📊 Financial Statistics & Ratios (TradingView)",
-            url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-statistics-and-ratios/`,
-          },
-          {
-            name: "⏳ 10-Year Timeframe (TradingView)",
-            // url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/?timeframe=120M`,
-            url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/?timeframe=120M`,
-          },
-          {
-            name: "📑 Financials Income Statement (TradingView)",
-            url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-income-statement/`,
-          },
-          {
-            name: "⚖️ Financials Balance Sheet (TradingView)",
-            url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-balance-sheet/`,
-          },
-          {
-            name: "🔄 Financials Cash Flow (TradingView)",
-            url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-cash-flow/`,
-          },
-          {
-            name: "💰 Financials Revenue (TradingView)",
-            url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-revenue/`,
-          },
-          {
-            name: "💸 Financials Dividends (TradingView)",
-            url: `https://www.tradingview.com/symbols/${exchange_code}-${ticker_symbol}/financials-dividends/`,
-          },
-        ];
-
-        // 1. Try automatic opening
-        targets.forEach((item, index) => {
-          setTimeout(() => {
-            window.open(item.url, "_blank");
-          }, index * 500); // 0.5s delay between tabs to avoid browser blocking
-        });
-
-        // 2. Display manual links as backup
         const container = document.getElementById("linkContainer");
         const list = document.getElementById("linkList");
         list.innerHTML = "";
         container.style.display = "block";
 
-        targets.forEach((item) => {
+        targets.forEach((item, index) => {
           const a = document.createElement("a");
           a.href = item.url;
           a.target = "_blank";
           a.className = "link-item";
           a.innerText = item.name;
           list.appendChild(a);
+
+          setTimeout(() => {
+            window.open(item.url, "_blank");
+          }, index * 500);
         });
       }
+
+      // Inisialisasi awal saat halaman dimuat
+      updatePlaceholders();
     </script>
   </body>
 </html>
