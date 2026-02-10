@@ -254,17 +254,18 @@
       const savedTheme = localStorage.getItem("theme") || "light";
       setTheme(savedTheme);
 
-      // --- PERBAIKAN: Fungsi Kapitalisasi Otomatis ---
+      // --- Fungsi Kapitalisasi Otomatis (Hanya untuk nilai, bukan placeholder) ---
       function handleInputCase(e) {
         const source = document.querySelector(
           'input[name="source"]:checked',
         ).value;
         if (source === "tradingview") {
+          // Mengubah nilai menjadi kapital secara internal saat mengetik
           e.target.value = e.target.value.toUpperCase();
         }
       }
 
-      // Tambahkan listener ke input agar huruf langsung berubah saat diketik
+      // Tambahkan listener ke input
       exchangeInput.addEventListener("input", handleInputCase);
       tickerInput.addEventListener("input", handleInputCase);
 
@@ -274,18 +275,21 @@
         ).value;
 
         if (selectedSource === "tradingview") {
+          // Placeholder menggunakan huruf kecil/campuran agar rapi
           exchangeInput.placeholder = "Example: SSE";
           tickerInput.placeholder = "Example: 601398";
-          // Tambahkan style visual
-          exchangeInput.style.textTransform = "uppercase";
-          tickerInput.style.textTransform = "uppercase";
-          // Ubah teks yang sudah ada menjadi kapital
+
+          // PENTING: Jangan gunakan style.textTransform = "uppercase" di sini
+          // karena akan merusak tampilan placeholder.
+          exchangeInput.style.textTransform = "none";
+          tickerInput.style.textTransform = "none";
+
+          // Ubah teks yang SUDAH ada di kolom menjadi kapital
           exchangeInput.value = exchangeInput.value.toUpperCase();
           tickerInput.value = tickerInput.value.toUpperCase();
         } else {
           exchangeInput.placeholder = "Example: sha";
           tickerInput.placeholder = "Example: 601398";
-          // Kembalikan ke normal untuk Stock Analysis
           exchangeInput.style.textTransform = "none";
           tickerInput.style.textTransform = "none";
         }
