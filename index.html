@@ -275,23 +275,26 @@
         ).value;
 
         if (selectedSource === "tradingview") {
-          // Placeholder menggunakan huruf kecil/campuran agar rapi
           exchangeInput.placeholder = "Example: SSE";
           tickerInput.placeholder = "Example: 601398";
 
-          // PENTING: Jangan gunakan style.textTransform = "uppercase" di sini
-          // karena akan merusak tampilan placeholder.
           exchangeInput.style.textTransform = "none";
           tickerInput.style.textTransform = "none";
 
-          // Ubah teks yang SUDAH ada di kolom menjadi kapital
+          // Ubah teks yang sudah ada menjadi KAPITAL
           exchangeInput.value = exchangeInput.value.toUpperCase();
           tickerInput.value = tickerInput.value.toUpperCase();
         } else {
+          // LOGIKA BARU: Untuk Stock Analysis
           exchangeInput.placeholder = "Example: sha";
           tickerInput.placeholder = "Example: 601398";
+          
           exchangeInput.style.textTransform = "none";
           tickerInput.style.textTransform = "none";
+
+          // Ubah teks yang sudah ada menjadi KECIL
+          exchangeInput.value = exchangeInput.value.toLowerCase();
+          tickerInput.value = tickerInput.value.toLowerCase();
         }
       }
 
