@@ -259,9 +259,13 @@
         const source = document.querySelector(
           'input[name="source"]:checked',
         ).value;
+
         if (source === "tradingview") {
-          // Mengubah nilai menjadi kapital secara internal saat mengetik
+          // Paksa jadi HURUF BESAR untuk TradingView
           e.target.value = e.target.value.toUpperCase();
+        } else {
+          // Paksa jadi huruf kecil untuk Stock Analysis
+          e.target.value = e.target.value.toLowerCase();
         }
       }
 
@@ -288,7 +292,7 @@
           // LOGIKA BARU: Untuk Stock Analysis
           exchangeInput.placeholder = "Example: sha";
           tickerInput.placeholder = "Example: 601398";
-          
+
           exchangeInput.style.textTransform = "none";
           tickerInput.style.textTransform = "none";
 
