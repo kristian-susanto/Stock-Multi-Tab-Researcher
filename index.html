@@ -241,7 +241,6 @@
       function setTheme(theme) {
         document.documentElement.setAttribute("data-theme", theme);
         localStorage.setItem("theme", theme);
-        // Tampilkan tombol mode sebaliknya
         themeText.innerText =
           theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
       }
@@ -252,21 +251,43 @@
         setTheme(currentTheme === "dark" ? "light" : "dark");
       });
 
-      // Load saved theme
       const savedTheme = localStorage.getItem("theme") || "light";
       setTheme(savedTheme);
 
-      // --- Original App Logic ---
+      // --- PERBAIKAN: Fungsi Kapitalisasi Otomatis ---
+      function handleInputCase(e) {
+        const source = document.querySelector(
+          'input[name="source"]:checked',
+        ).value;
+        if (source === "tradingview") {
+          e.target.value = e.target.value.toUpperCase();
+        }
+      }
+
+      // Tambahkan listener ke input agar huruf langsung berubah saat diketik
+      exchangeInput.addEventListener("input", handleInputCase);
+      tickerInput.addEventListener("input", handleInputCase);
+
       function updatePlaceholders() {
         const selectedSource = document.querySelector(
           'input[name="source"]:checked',
         ).value;
+
         if (selectedSource === "tradingview") {
           exchangeInput.placeholder = "Example: SSE";
           tickerInput.placeholder = "Example: 601398";
+          // Tambahkan style visual
+          exchangeInput.style.textTransform = "uppercase";
+          tickerInput.style.textTransform = "uppercase";
+          // Ubah teks yang sudah ada menjadi kapital
+          exchangeInput.value = exchangeInput.value.toUpperCase();
+          tickerInput.value = tickerInput.value.toUpperCase();
         } else {
           exchangeInput.placeholder = "Example: sha";
           tickerInput.placeholder = "Example: 601398";
+          // Kembalikan ke normal untuk Stock Analysis
+          exchangeInput.style.textTransform = "none";
+          tickerInput.style.textTransform = "none";
         }
       }
 
@@ -294,6 +315,7 @@
 
         let targets = [];
         if (source === "tradingview") {
+          // Memastikan data benar-benar kapital sebelum masuk ke URL
           exchange = exchange.toUpperCase();
           ticker = ticker.toUpperCase();
           targets = [
@@ -307,6 +329,7 @@
             },
             {
               name: "🏢 Overview",
+              // url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
               url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
             },
             {
@@ -348,6 +371,7 @@
             },
             {
               name: "🏢 Overview",
+              // url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
               url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
             },
             {
