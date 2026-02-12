@@ -208,12 +208,15 @@
         <label>Data Source Support</label>
         <div class="radio-group">
           <label class="radio-option">
-            <input type="radio" name="source" value="tradingview" checked />
-            TradingView
+            <input
+              type="radio"
+              name="source"
+              value="stockanalysis"
+              checked
+            />Stock Analysis
           </label>
           <label class="radio-option">
-            <input type="radio" name="source" value="stockanalysis" /> Stock
-            Analysis
+            <input type="radio" name="source" value="tradingview" />TradingView
           </label>
         </div>
       </div>
@@ -260,12 +263,12 @@
           'input[name="source"]:checked',
         ).value;
 
-        if (source === "tradingview") {
-          // Paksa jadi HURUF BESAR untuk TradingView
-          e.target.value = e.target.value.toUpperCase();
-        } else {
+        if (source === "stockanalysis") {
           // Paksa jadi huruf kecil untuk Stock Analysis
           e.target.value = e.target.value.toLowerCase();
+        } else {
+          // Paksa jadi HURUF BESAR untuk TradingView
+          e.target.value = e.target.value.toUpperCase();
         }
       }
 
@@ -278,17 +281,7 @@
           'input[name="source"]:checked',
         ).value;
 
-        if (selectedSource === "tradingview") {
-          exchangeInput.placeholder = "Example: SSE";
-          tickerInput.placeholder = "Example: 601398";
-
-          exchangeInput.style.textTransform = "none";
-          tickerInput.style.textTransform = "none";
-
-          // Ubah teks yang sudah ada menjadi KAPITAL
-          exchangeInput.value = exchangeInput.value.toUpperCase();
-          tickerInput.value = tickerInput.value.toUpperCase();
-        } else {
+        if (selectedSource === "stockanalysis") {
           // LOGIKA BARU: Untuk Stock Analysis
           exchangeInput.placeholder = "Example: sha";
           tickerInput.placeholder = "Example: 601398";
@@ -299,6 +292,16 @@
           // Ubah teks yang sudah ada menjadi KECIL
           exchangeInput.value = exchangeInput.value.toLowerCase();
           tickerInput.value = tickerInput.value.toLowerCase();
+        } else {
+          exchangeInput.placeholder = "Example: SSE";
+          tickerInput.placeholder = "Example: 601398";
+
+          exchangeInput.style.textTransform = "none";
+          tickerInput.style.textTransform = "none";
+
+          // Ubah teks yang sudah ada menjadi KAPITAL
+          exchangeInput.value = exchangeInput.value.toUpperCase();
+          tickerInput.value = tickerInput.value.toUpperCase();
         }
       }
 
@@ -325,7 +328,49 @@
         }
 
         let targets = [];
-        if (source === "tradingview") {
+        if (source === "stockanalysis") {
+          exchange = exchange.toLowerCase();
+          ticker = ticker.toLowerCase();
+          targets = [
+            {
+              name: "📰 Latest News",
+              url: `https://www.google.com/search?q=${exchange}:%20${ticker}&tbm=nws&tbs=sbd:1`,
+            },
+            {
+              name: "📊 Financial Ratios",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/ratios/?p=quarterly`,
+            },
+            {
+              name: "🏢 Overview",
+              // url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
+            },
+            {
+              name: "⏳ Historical Data",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/history/`,
+            },
+            {
+              name: "📑 Income Statement",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/?p=quarterly`,
+            },
+            {
+              name: "⚖️ Balance Sheet",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/balance-sheet/?p=quarterly`,
+            },
+            {
+              name: "🔄 Cash Flow",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/cash-flow-statement/?p=quarterly`,
+            },
+            {
+              name: "💰 Revenue",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/metrics/`,
+            },
+            {
+              name: "💸 Dividends",
+              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/dividend/`,
+            },
+          ];
+        } else {
           // Memastikan data benar-benar kapital sebelum masuk ke URL
           exchange = exchange.toUpperCase();
           ticker = ticker.toUpperCase();
@@ -366,48 +411,6 @@
             {
               name: "💸 Dividends",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-dividends/`,
-            },
-          ];
-        } else {
-          exchange = exchange.toLowerCase();
-          ticker = ticker.toLowerCase();
-          targets = [
-            {
-              name: "📰 Latest News",
-              url: `https://www.google.com/search?q=${exchange}:%20${ticker}&tbm=nws&tbs=sbd:1`,
-            },
-            {
-              name: "📊 Financial Ratios",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/ratios/?p=quarterly`,
-            },
-            {
-              name: "🏢 Overview",
-              // url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
-              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
-            },
-            {
-              name: "⏳ Historical Data",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/history/`,
-            },
-            {
-              name: "📑 Income Statement",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/?p=quarterly`,
-            },
-            {
-              name: "⚖️ Balance Sheet",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/balance-sheet/?p=quarterly`,
-            },
-            {
-              name: "🔄 Cash Flow",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/cash-flow-statement/?p=quarterly`,
-            },
-            {
-              name: "💰 Revenue",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/metrics/`,
-            },
-            {
-              name: "💸 Dividends",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/dividend/`,
             },
           ];
         }
