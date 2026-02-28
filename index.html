@@ -8,6 +8,11 @@
       rel="icon"
       href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>"
     />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
       /* Theme Variables */
       :root {
@@ -121,6 +126,34 @@
         outline: none;
       }
 
+      .input-group span:hover {
+        text-decoration: underline;
+        opacity: 0.8;
+      }
+
+      .checkbox-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        background: var(--radio-bg);
+        padding: 12px;
+        border: 1px solid var(--input-border);
+        border-radius: 8px;
+        max-height: 150px;
+        overflow-y: auto;
+        transition: border-color 0.3s;
+      }
+      .check-option {
+        font-size: 13px;
+        color: var(--text-main);
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+      .check-option input {
+        margin-right: 8px;
+      }
+
       .radio-group {
         display: flex;
         gap: 15px;
@@ -185,6 +218,12 @@
         text-align: center;
         margin-top: 15px;
       }
+
+      /* Memaksa teks SweetAlert Toast agar lebih tebal dan hitam */
+      .swal2-toast .swal2-title {
+        color: inherit !important;
+        font-weight: 600 !important;
+      }
     </style>
   </head>
   <body>
@@ -202,6 +241,63 @@
       <div class="input-group">
         <label>Ticker Symbol</label>
         <input type="text" id="ticker_symbol" placeholder="Example: 601398" />
+      </div>
+
+      <div class="input-group">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+          "
+        >
+          <label style="margin-bottom: 0">Select Data Points</label>
+          <div
+            style="
+              font-size: 11px;
+              cursor: pointer;
+              color: var(--accent-color);
+              font-weight: bold;
+            "
+          >
+            <span onclick="toggleAllCheckboxes(true)">All</span> |
+            <span onclick="toggleAllCheckboxes(false)">None</span>
+          </div>
+        </div>
+        <div class="checkbox-grid" id="checkboxGrid">
+          <label class="check-option"
+            ><input type="checkbox" value="news" checked /> Latest News</label
+          >
+          <label class="check-option"
+            ><input type="checkbox" value="stats" checked /> Ratios</label
+          >
+          <label class="check-option"
+            ><input type="checkbox" value="overview" checked /> Overview</label
+          >
+          <label class="check-option"
+            ><input type="checkbox" value="history" checked /> Historical
+            Data</label
+          >
+          <label class="check-option"
+            ><input type="checkbox" value="income" checked /> Income
+            Statement</label
+          >
+          <label class="check-option"
+            ><input type="checkbox" value="balance" checked /> Balance
+            Sheet</label
+          >
+          <label class="check-option"
+            ><input type="checkbox" value="cash" checked /> Cash Flow</label
+          >
+          <label class="check-option"
+            ><input type="checkbox" value="revenue" checked /> Revenue</label
+          >
+          <label class="check-option"
+            ><input type="checkbox" value="dividends" checked />
+            Dividends</label
+          >
+        </div>
       </div>
 
       <div class="input-group">
@@ -321,100 +417,165 @@
         const source = document.querySelector(
           'input[name="source"]:checked',
         ).value;
+        const selectedData = Array.from(
+          document.querySelectorAll("#checkboxGrid input:checked"),
+        ).map((cb) => cb.value);
 
+        // Deteksi Tema
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+
+        // Konfigurasi SweetAlert2 Toast Mixin
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+          // Perbaikan warna latar dan teks
+          background: isDark ? "#2d2d2d" : "#ffffff",
+          color: isDark ? "#ffffff" : "#000000",
+          // Hapus atau sesuaikan iconColor agar mengikuti warna default SweetAlert (Sukses = Hijau)
+          iconColor: undefined,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        // Validasi Input Teks menggunakan Toast
         if (!exchange || !ticker) {
-          alert("Please fill in both fields!");
+          Toast.fire({
+            icon: "error",
+            title: "Exchange & Ticker are required!",
+          });
           return;
         }
 
-        let targets = [];
+        // Validasi Checkbox menggunakan Toast
+        if (selectedData.length === 0) {
+          Toast.fire({
+            icon: "warning",
+            title: "Select at least one data point!",
+          });
+          return;
+        }
+
+        // --- Logika Targets ---
+        let allTargets = [];
         if (source === "stockanalysis") {
           exchange = exchange.toLowerCase();
           ticker = ticker.toLowerCase();
-          targets = [
+          allTargets = [
             {
+              id: "news",
               name: "📰 Latest News",
               url: `https://www.google.com/search?q=${exchange}:%20${ticker}&tbm=nws&tbs=sbd:1`,
             },
             {
+              id: "stats",
               name: "📊 Financial Ratios",
               url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/ratios/?p=quarterly`,
             },
             {
+              id: "overview",
               name: "🏢 Overview",
               // url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
               url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
             },
             {
+              id: "history",
               name: "⏳ Historical Data",
               url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/history/`,
             },
             {
+              id: "income",
               name: "📑 Income Statement",
               url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/?p=quarterly`,
             },
             {
+              id: "balance",
               name: "⚖️ Balance Sheet",
               url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/balance-sheet/?p=quarterly`,
             },
             {
+              id: "cash",
               name: "🔄 Cash Flow",
               url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/cash-flow-statement/?p=quarterly`,
             },
             {
+              id: "revenue",
               name: "💰 Revenue",
               url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/metrics/`,
             },
             {
+              id: "dividends",
               name: "💸 Dividends",
               url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/dividend/`,
             },
           ];
         } else {
-          // Memastikan data benar-benar kapital sebelum masuk ke URL
           exchange = exchange.toUpperCase();
           ticker = ticker.toUpperCase();
-          targets = [
+          allTargets = [
             {
+              id: "news",
               name: "📰 Latest News",
               url: `https://www.google.com/search?q=${exchange}:%20${ticker}&tbm=nws&tbs=sbd:1`,
             },
             {
+              id: "stats",
               name: "📊 Financial Stats",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-statistics-and-ratios/`,
             },
             {
+              id: "overview",
               name: "🏢 Overview",
               // url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
               url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
             },
             {
+              id: "history",
               name: "⏳ Historical Data",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/?timeframe=120M`,
             },
             {
+              id: "income",
               name: "📑 Income Statement",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-income-statement/`,
             },
             {
+              id: "balance",
               name: "⚖️ Balance Sheet",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-balance-sheet/`,
             },
             {
+              id: "cash",
               name: "🔄 Cash Flow",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-cash-flow/`,
             },
             {
+              id: "revenue",
               name: "💰 Revenue",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-revenue/`,
             },
             {
+              id: "dividends",
               name: "💸 Dividends",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-dividends/`,
             },
           ];
         }
 
+        const targets = allTargets.filter((t) => selectedData.includes(t.id));
+
+        // Toast Sukses
+        Toast.fire({
+          icon: "success",
+          title: `Opening ${targets.length} tabs for ${ticker.toUpperCase()}`,
+        });
+
+        // Tampilkan Link Manual
         document.getElementById("hintText").style.display = "block";
         const container = document.getElementById("linkContainer");
         const list = document.getElementById("linkList");
@@ -429,9 +590,19 @@
           a.innerText = item.name;
           list.appendChild(a);
 
+          // Buka tab otomatis dengan jeda
           setTimeout(() => {
             window.open(item.url, "_blank");
-          }, index * 100);
+          }, index * 250);
+        });
+      }
+
+      function toggleAllCheckboxes(selectAll) {
+        const checkboxes = document.querySelectorAll(
+          '#checkboxGrid input[type="checkbox"]',
+        );
+        checkboxes.forEach((cb) => {
+          cb.checked = selectAll;
         });
       }
 
