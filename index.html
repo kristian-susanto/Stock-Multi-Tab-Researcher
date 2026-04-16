@@ -234,8 +234,14 @@
       <h2>Stock Multi-Tab Researcher</h2>
 
       <div class="input-group">
-        <label>Exchange Code</label>
-        <input type="text" id="exchange_code" placeholder="Example: SSE" />
+        <label>Exchange Name</label>
+        <input
+          type="text"
+          id="exchange_name"
+          list="exchange_list"
+          placeholder="Search Country or Exchange..."
+        />
+        <datalist id="exchange_list"> </datalist>
       </div>
 
       <div class="input-group">
@@ -330,28 +336,167 @@
     </div>
 
     <script>
-      const exchangeInput = document.getElementById("exchange_code");
+      const exchangeInput = document.getElementById("exchange_name");
       const tickerInput = document.getElementById("ticker_symbol");
       const radioButtons = document.querySelectorAll('input[name="source"]');
       const themeToggle = document.getElementById("themeToggle");
       const themeText = document.getElementById("themeText");
+      const exchanges = [
+        {
+          name: "Abu Dhabi Securities Exchange (United Arab Emirates)",
+          code: "ADX",
+        },
+        { name: "Amman Stock Exchange (Jordan)", code: "ASE" },
+        { name: "Aquis Exchange (United Kingdom)", code: "AQU" },
+        { name: "Athens Stock Exchange (Greece)", code: "ATH" },
+        { name: "Australian Securities Exchange (Australia)", code: "ASX" },
+        { name: "Bahrain Stock Exchange (Bahrain)", code: "BAX" },
+        { name: "Beirut Stock Exchange (Lebanon)", code: "BDB" },
+        { name: "Belgrade Stock Exchange (Serbia)", code: "BELEX" },
+        { name: "Bombay Stock Exchange (India)", code: "BOM" },
+        { name: "Borsa Italiana (Italy)", code: "BIT" },
+        { name: "Botswana Stock Exchange (Botswana)", code: "BSM" },
+        { name: "Bratislava Stock Exchange (Slovakia)", code: "BSSE" },
+        { name: "Brazil Stock Exchange (Brazil)", code: "BVMF" },
+        { name: "Bucharest Stock Exchange (Romania)", code: "BVB" },
+        { name: "Budapest Stock Exchange (Hungary)", code: "BUD" },
+        { name: "Buenos Aires Stock Exchange (Argentina)", code: "BCBA" },
+        { name: "Bulgarian Stock Exchange (Bulgaria)", code: "BUL" },
+        { name: "Bursa Malaysia (Malaysia)", code: "KLSE" },
+        { name: "Canadian Securities Exchange (Canada)", code: "CSE" },
+        { name: "Caracas Stock Exchange (Venezuela)", code: "CCSE" },
+        { name: "Casablanca Stock Exchange (Morocco)", code: "CBSE" },
+        { name: "Cboe Canada (Canada)", code: "NEO" },
+        { name: "Colombia Stock Exchange (Colombia)", code: "BVC" },
+        { name: "Colombo Stock Exchange (Sri Lanka)", code: "COSE" },
+        { name: "Copenhagen Stock Exchange (Denmark)", code: "CPH" },
+        { name: "Cyprus Stock Exchange (Cyprus)", code: "CYS" },
+        { name: "Deutsche Börse Xetra (Germany)", code: "ETR" },
+        { name: "Dhaka Stock Exchange (Bangladesh)", code: "DSE" },
+        { name: "Dubai Financial Market (United Arab Emirates)", code: "DFM" },
+        { name: "Dusseldorf Stock Exchange (Germany)", code: "DUSE" },
+        { name: "Egyptian Stock Exchange (Egypt)", code: "EGX" },
+        { name: "Euronext Amsterdam (Netherlands)", code: "AMS" },
+        { name: "Euronext Brussels (Belgium)", code: "EBR" },
+        { name: "Euronext Dublin (Ireland)", code: "ISE" },
+        { name: "Euronext Lisbon (Portugal)", code: "ELI" },
+        { name: "Euronext Paris (Poland)", code: "WSE" },
+        { name: "Frankfurt Stock Exchange (Germany)", code: "FRA" },
+        { name: "Fukuoka Stock Exchange (Japan)", code: "FKSE" },
+        { name: "Ghana Stock Exchange (Ghana)", code: "GHSE" },
+        { name: "Hamburg Stock Exchange (Germany)", code: "HAM" },
+        { name: "Hanoi Stock Exchange (Viet Nam)", code: "HNX" },
+        { name: "Ho Chi Minh Stock Exchange (Viet Nam)", code: "HOSE" },
+        { name: "Hong Kong Stock Exchange (Hong Kong)", code: "HKG" },
+        { name: "Indonesia Stock Exchange (Indonesia)", code: "IDX" },
+        { name: "Istanbul Stock Exchange (Turkey)", code: "IST" },
+        { name: "Ivory Coast Stock Exchange (Ivory Coast)", code: "BRVM" },
+        { name: "Jamaica Stock Exchange (Jamaica)", code: "JMSE" },
+        { name: "Johannesburg Stock Exchange (South Africa)", code: "JSE" },
+        { name: "Kazakhstan Stock Exchange (Kazakhstan)", code: "KASE" },
+        { name: "Korea New Exchange (South Korea)", code: "XKON" },
+        { name: "Korea Stock Exchange (South Korea)", code: "	KRX" },
+        { name: "KOSDAQ (South Korea)", code: "KOSDAQ" },
+        { name: "Kuwait Stock Exchange (Kuwait)", code: "KWSE" },
+        { name: "Lima Stock Exchange (Peru)", code: "BVL" },
+        { name: "Ljubljana Stock Exchange (Slovenia)", code: "LJSE" },
+        { name: "London Stock Exchange (United Kingdom)", code: "LON" },
+        { name: "London Stock Exchange AIM (United Kingdom)", code: "AIM" },
+        { name: "Lusaka Stock Exchange (Zambia)", code: "LUSE" },
+        { name: "Luxembourg Stock Exchange (Luxembourg)", code: "LUX" },
+        { name: "Madrid Stock Exchange (Spain)", code: "BME" },
+        { name: "Malawi Stock Exchange (Malawi)", code: "MAL" },
+        { name: "Malta Stock Exchange (Malta)", code: "MSE" },
+        { name: "Mauritius Stock Exchange (Mauritius)", code: "MUSE" },
+        { name: "Mexican Stock Exchange (Mexico)", code: "BMV" },
+        { name: "Moscow Stock Exchange (Russia)", code: "MOEX" },
+        { name: "Munich Stock Exchange (Germany)", code: "MUN" },
+        { name: "Muscat Securities Market (Oman)", code: "MSM" },
+        { name: "Nagoya Stock Exchange (Japan)", code: "XNGO" },
+        { name: "Nairobi Stock Exchange (Kenya)", code: "NASE" },
+        { name: "Namibian Stock Exchange (Namibia)", code: "NMSE" },
+        { name: "Nasdaq Helsinki (Finland)", code: "HEL" },
+        { name: "Nasdaq Iceland (Iceland)", code: "ICE" },
+        { name: "Nasdaq Riga (Latvia)", code: "RSE" },
+        { name: "Nasdaq Stock Market (United States)", code: "NASDAQ" },
+        { name: "Nasdaq Stockholm (Sweden)", code: "STO" },
+        { name: "Nasdaq Tallinn (Estonia)", code: "TAL" },
+        { name: "Nasdaq Vilnius (Lithuania)", code: "VSE" },
+        {
+          name: "National Stock Exchange of Australia (Australia)",
+          code: "NSX",
+        },
+        { name: "National Stock Exchange of India (India)", code: "NSE" },
+        { name: "New York Stock Exchange (United States)", code: "NYSE" },
+        { name: "New Zealand Stock Exchange (New Zealand)", code: "NZE" },
+        { name: "Nigerian Stock Exchange (Nigeria)", code: "NGX" },
+        { name: "Nordic Growth Market (Sweden)", code: "NGM" },
+        { name: "NYSE American (United States)", code: "AMEX" },
+        { name: "Oslo Børs (Norway)", code: "OSL" },
+        { name: "Pakistan Stock Exchange (Pakistan)", code: "PSX" },
+        { name: "Palestine Stock Exchange (Palestine)", code: "PEX" },
+        { name: "PFTS Stock Exchange (Ukraine)", code: "UKR" },
+        { name: "Philippine Stock Exchange (Philippines)", code: "PSE" },
+        { name: "Prague Stock Exchange (Czech Republic)", code: "PRA" },
+        { name: "Qatar Stock Exchange (Qatar)", code: "QSE" },
+        { name: "Santiago Stock Exchange (Chile)", code: "SNSE" },
+        { name: "Sapporo Stock Exchange (Japan)", code: "SPSE" },
+        { name: "Saudi Stock Exchange (Saudi Arabia)", code: "Saudi Arabia" },
+        { name: "Shanghai Stock Exchange (China)", code: "SHA" },
+        { name: "Shenzhen Stock Exchange (China)", code: "SHE" },
+        { name: "Singapore Exchange (Singapore)", code: "SGX" },
+        { name: "Singapore Exchange - Catalist (Singapore)", code: "SGXC" },
+        { name: "SIX Swiss Exchange (Switzerland)", code: "SWX" },
+        { name: "Spotlight Stock Market (Sweden)", code: "XSAT" },
+        { name: "Stock Exchange of Thailand (Thailand)", code: "BKK" },
+        { name: "Stuttgart Stock Exchange (Germany)", code: "BST" },
+        { name: "Taipei Exchange (Taiwan)", code: "TPEX" },
+        { name: "Taiwan Stock Exchange (Taiwan)", code: "TPE" },
+        { name: "Tanzania Stock Exchange (Tanzania)", code: "DAR" },
+        { name: "Tel Aviv Stock Exchange (Israel)", code: "TLV" },
+        { name: "Tokyo Stock Exchange (Japan)", code: "TYO" },
+        { name: "Toronto Stock Exchange (Canada)", code: "TSX" },
+        {
+          name: "Trinidad and Tobago Stock Exchange (Trinidad and Tobago)",
+          code: "TTSE",
+        },
+        { name: "TSX Venture Exchange (Canada)", code: "TSXV" },
+        { name: "Tunis Stock Exchange (Tunisia)", code: "BVMT" },
+        { name: "Uganda Securities Exchange (Uganda)", code: "UGSE" },
+        { name: "Vienna Stock Exchange (Austria)", code: "VIE" },
+        { name: "Warsaw Stock Exchange (Poland)", code: "WSE" },
+        { name: "Zagreb Stock Exchange (Croatia)", code: "ZSE" },
+        { name: "Zimbabwe Stock Exchange (Zimbabwe)", code: "ZMSE" },
+      ];
 
-      // --- Theme Logic ---
-      function setTheme(theme) {
-        document.documentElement.setAttribute("data-theme", theme);
-        localStorage.setItem("theme", theme);
-        themeText.innerText =
-          theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+      // Fungsi untuk mengisi datalist secara otomatis
+      function populateExchangeList() {
+        const list = document.getElementById("exchange_list");
+        exchanges.forEach((ex) => {
+          const option = document.createElement("option");
+          option.value = ex.name; // tampilkan nama full
+          option.setAttribute("data-code", ex.code); // simpan kode di atribut
+          list.appendChild(option);
+        });
       }
 
-      themeToggle.addEventListener("click", () => {
-        const currentTheme =
-          document.documentElement.getAttribute("data-theme");
-        setTheme(currentTheme === "dark" ? "light" : "dark");
-      });
+      // Panggil fungsi ini saat window load
+      window.addEventListener("DOMContentLoaded", populateExchangeList);
 
-      const savedTheme = localStorage.getItem("theme") || "light";
-      setTheme(savedTheme);
+      function getExchangeCodeFromName(name) {
+        const found = exchanges.find(
+          (ex) => ex.name.toLowerCase() === name.toLowerCase(),
+        );
+        return found ? found.code : name; // fallback kalau user ketik manual
+      }
+
+      function toTitleCase(str) {
+        return str.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+      }
+
+      exchangeInput.addEventListener("blur", () => {
+        exchangeInput.value = toTitleCase(exchangeInput.value);
+      });
 
       // --- Fungsi Kapitalisasi Otomatis (Hanya untuk nilai, bukan placeholder) ---
       function handleInputCase(e) {
@@ -359,12 +504,16 @@
           'input[name="source"]:checked',
         ).value;
 
-        if (source === "stockanalysis") {
-          // Paksa jadi huruf kecil untuk Stock Analysis
-          e.target.value = e.target.value.toLowerCase();
+        if (e.target.id === "exchange_name") {
+          // Exchange selalu Title Case
+          e.target.value = toTitleCase(e.target.value);
         } else {
-          // Paksa jadi HURUF BESAR untuk TradingView
-          e.target.value = e.target.value.toUpperCase();
+          // Ticker tetap mengikuti source
+          if (source === "stockanalysis") {
+            e.target.value = e.target.value.toLowerCase();
+          } else {
+            e.target.value = e.target.value.toUpperCase();
+          }
         }
       }
 
@@ -377,28 +526,23 @@
           'input[name="source"]:checked',
         ).value;
 
+        // Exchange selalu sama
+        exchangeInput.placeholder = "Select exchange name";
+
         if (selectedSource === "stockanalysis") {
-          // LOGIKA BARU: Untuk Stock Analysis
-          exchangeInput.placeholder = "Example: sha";
           tickerInput.placeholder = "Example: 601398";
 
-          exchangeInput.style.textTransform = "none";
-          tickerInput.style.textTransform = "none";
-
-          // Ubah teks yang sudah ada menjadi KECIL
-          exchangeInput.value = exchangeInput.value.toLowerCase();
+          // ticker lowercase
           tickerInput.value = tickerInput.value.toLowerCase();
         } else {
-          exchangeInput.placeholder = "Example: SSE";
           tickerInput.placeholder = "Example: 601398";
 
-          exchangeInput.style.textTransform = "none";
-          tickerInput.style.textTransform = "none";
-
-          // Ubah teks yang sudah ada menjadi KAPITAL
-          exchangeInput.value = exchangeInput.value.toUpperCase();
+          // ticker uppercase
           tickerInput.value = tickerInput.value.toUpperCase();
         }
+
+        // Jaga exchange tetap Title Case
+        exchangeInput.value = toTitleCase(exchangeInput.value);
       }
 
       radioButtons.forEach((radio) => {
@@ -412,7 +556,8 @@
       });
 
       function processSearch() {
-        let exchange = exchangeInput.value.trim();
+        let exchangeName = exchangeInput.value.trim();
+        let exchange = getExchangeCodeFromName(exchangeName);
         let ticker = tickerInput.value.trim();
         const source = document.querySelector(
           'input[name="source"]:checked',
@@ -466,6 +611,18 @@
         if (source === "stockanalysis") {
           exchange = exchange.toLowerCase();
           ticker = ticker.toLowerCase();
+
+          // Tentukan Base URL berdasarkan Exchange
+          // Jika OTC, NASDAQ, atau NYSE, gunakan format /stocks/ticker/
+          const usExchanges = ["otc", "nasdaq", "nyse", "amex"];
+          let baseUrl;
+
+          if (usExchanges.includes(exchange)) {
+            baseUrl = `https://www.stockanalysis.com/stocks/${ticker}`;
+          } else {
+            baseUrl = `https://www.stockanalysis.com/quote/${exchange}/${ticker}`;
+          }
+
           allTargets = [
             {
               id: "news",
@@ -475,43 +632,43 @@
             {
               id: "stats",
               name: "📊 Financial Ratios",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/ratios/?p=quarterly`,
+              url: `${baseUrl}/financials/ratios/?p=quarterly`,
             },
             {
               id: "overview",
               name: "🏢 Overview",
-              // url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
-              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.stockanalysis.com/quote/${exchange}/${ticker}/company`,
+              // url: `${baseUrl}/company`,
+              url: `https://translate.google.com/translate?sl=en&tl=id&u=${baseUrl}/company`,
             },
             {
               id: "history",
               name: "⏳ Historical Data",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/history/`,
+              url: `${baseUrl}/history/`,
             },
             {
               id: "income",
               name: "📑 Income Statement",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/?p=quarterly`,
+              url: `${baseUrl}/financials/?p=quarterly`,
             },
             {
               id: "balance",
               name: "⚖️ Balance Sheet",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/balance-sheet/?p=quarterly`,
+              url: `${baseUrl}/financials/balance-sheet/?p=quarterly`,
             },
             {
               id: "cash",
               name: "🔄 Cash Flow",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/cash-flow-statement/?p=quarterly`,
+              url: `${baseUrl}/financials/cash-flow-statement/?p=quarterly`,
             },
             {
               id: "revenue",
               name: "💰 Revenue",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/financials/metrics/`,
+              url: `${baseUrl}/financials/metrics/`,
             },
             {
               id: "dividends",
               name: "💸 Dividends",
-              url: `https://www.stockanalysis.com/quote/${exchange}/${ticker}/dividend/`,
+              url: `${baseUrl}/dividend/`,
             },
           ];
         } else {
@@ -607,6 +764,23 @@
       }
 
       updatePlaceholders();
+
+      // --- Theme Logic ---
+      function setTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        themeText.innerText =
+          theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode";
+      }
+
+      themeToggle.addEventListener("click", () => {
+        const currentTheme =
+          document.documentElement.getAttribute("data-theme");
+        setTheme(currentTheme === "dark" ? "light" : "dark");
+      });
+
+      const savedTheme = localStorage.getItem("theme") || "light";
+      setTheme(savedTheme);
     </script>
   </body>
 </html>
