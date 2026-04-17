@@ -323,7 +323,23 @@
         </div>
       </div>
 
-      <button class="btn-main" onclick="processSearch()">Open All Tabs</button>
+      <div style="display: flex; gap: 10px; margin-top: 15px">
+        <button class="btn-main" style="flex: 1" onclick="processSearch()">
+          Open All Tabs
+        </button>
+        <button
+          class="btn-main"
+          style="flex: 1; background: #e74c3c"
+          onclick="resetForm()"
+        >
+          <!-- <button
+          class="btn-main"
+          style="flex: 1; background: #95a5a6"
+          onclick="resetForm()"
+        > -->
+          Reset
+        </button>
+      </div>
 
       <div id="linkContainer">
         <label>Manual Links:</label>
@@ -764,6 +780,51 @@
       }
 
       updatePlaceholders();
+
+      function resetForm() {
+        // Deteksi Tema
+        const isDark =
+          document.documentElement.getAttribute("data-theme") === "dark";
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 4000,
+          timerProgressBar: true,
+          background: isDark ? "#2d2d2d" : "#ffffff",
+          color: isDark ? "#ffffff" : "#000000",
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        // Reset input
+        document.getElementById("exchange_name").value = "";
+        document.getElementById("ticker_symbol").value = "";
+
+        // Reset checkbox (semua checked seperti default awal)
+        toggleAllCheckboxes(true);
+
+        // Reset radio ke default
+        document.querySelector(
+          'input[name="source"][value="stockanalysis"]',
+        ).checked = true;
+
+        // Update placeholder & casing
+        updatePlaceholders();
+
+        // Sembunyikan hasil link
+        document.getElementById("linkContainer").style.display = "none";
+        document.getElementById("hintText").style.display = "none";
+
+        // Toast notifikasi (auto theme-aware)
+        Toast.fire({
+          icon: "success",
+          title: "Form has been reset",
+        });
+      }
 
       // --- Theme Logic ---
       function setTheme(theme) {
