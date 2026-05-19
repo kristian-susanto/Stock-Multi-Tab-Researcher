@@ -273,35 +273,31 @@
         </div>
         <div class="checkbox-grid" id="checkboxGrid">
           <label class="check-option"
-            ><input type="checkbox" value="news" checked /> Latest News</label
+            ><input type="checkbox" value="news" /> Latest News</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="stats" checked /> Ratios</label
+            ><input type="checkbox" value="stats" /> Ratios</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="overview" checked /> Overview</label
+            ><input type="checkbox" value="overview" /> Overview</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="history" checked /> Historical
-            Data</label
+            ><input type="checkbox" value="history" /> Historical Data</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="income" checked /> Income
-            Statement</label
+            ><input type="checkbox" value="income" /> Income Statement</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="balance" checked /> Balance
-            Sheet</label
+            ><input type="checkbox" value="balance" /> Balance Sheet</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="cash" checked /> Cash Flow</label
+            ><input type="checkbox" value="cash" /> Cash Flow</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="revenue" checked /> Revenue</label
+            ><input type="checkbox" value="revenue" /> Revenue</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="dividends" checked />
-            Dividends</label
+            ><input type="checkbox" value="dividends" /> Dividends</label
           >
         </div>
       </div>
@@ -485,25 +481,25 @@
         { name: "Zimbabwe Stock Exchange (Zimbabwe)", code: "ZMSE" },
       ];
 
-      // Fungsi untuk mengisi datalist secara otomatis
+      // Function to fill datalist automatically
       function populateExchangeList() {
         const list = document.getElementById("exchange_list");
         exchanges.forEach((ex) => {
           const option = document.createElement("option");
-          option.value = ex.name; // tampilkan nama full
-          option.setAttribute("data-code", ex.code); // simpan kode di atribut
+          option.value = ex.name; // show full name
+          option.setAttribute("data-code", ex.code); // save code in attribute
           list.appendChild(option);
         });
       }
 
-      // Panggil fungsi ini saat window load
+      // Call this function when window loads
       window.addEventListener("DOMContentLoaded", populateExchangeList);
 
       function getExchangeCodeFromName(name) {
         const found = exchanges.find(
           (ex) => ex.name.toLowerCase() === name.toLowerCase(),
         );
-        return found ? found.code : name; // fallback kalau user ketik manual
+        return found ? found.code : name; // fallback if user types manually
       }
 
       function toTitleCase(str) {
@@ -514,17 +510,17 @@
         exchangeInput.value = toTitleCase(exchangeInput.value);
       });
 
-      // --- Fungsi Kapitalisasi Otomatis (Hanya untuk nilai, bukan placeholder) ---
+      // --- Auto Capitalization Function (Only for values, not placeholders) ---
       function handleInputCase(e) {
         const source = document.querySelector(
           'input[name="source"]:checked',
         ).value;
 
         if (e.target.id === "exchange_name") {
-          // Exchange selalu Title Case
+          // Exchange is always Title Case
           e.target.value = toTitleCase(e.target.value);
         } else {
-          // Ticker tetap mengikuti source
+          // Ticker still follows source
           if (source === "stockanalysis") {
             e.target.value = e.target.value.toLowerCase();
           } else {
@@ -533,7 +529,7 @@
         }
       }
 
-      // Tambahkan listener ke input
+      // Add listener to input
       exchangeInput.addEventListener("input", handleInputCase);
       tickerInput.addEventListener("input", handleInputCase);
 
@@ -542,22 +538,22 @@
           'input[name="source"]:checked',
         ).value;
 
-        // Exchange selalu sama
+        // Exchange is always the same
         exchangeInput.placeholder = "Select exchange name";
 
         if (selectedSource === "stockanalysis") {
           tickerInput.placeholder = "Example: 601398";
 
-          // ticker lowercase
+          // lowercase ticker
           tickerInput.value = tickerInput.value.toLowerCase();
         } else {
           tickerInput.placeholder = "Example: 601398";
 
-          // ticker uppercase
+          // uppercase ticker
           tickerInput.value = tickerInput.value.toUpperCase();
         }
 
-        // Jaga exchange tetap Title Case
+        // Keep the exchange in Title Case
         exchangeInput.value = toTitleCase(exchangeInput.value);
       }
 
@@ -582,21 +578,21 @@
           document.querySelectorAll("#checkboxGrid input:checked"),
         ).map((cb) => cb.value);
 
-        // Deteksi Tema
+        // Theme Detection
         const isDark =
           document.documentElement.getAttribute("data-theme") === "dark";
 
-        // Konfigurasi SweetAlert2 Toast Mixin
+        // SweetAlert2 Toast Mixin Configuration
         const Toast = Swal.mixin({
           toast: true,
           position: "top",
           showConfirmButton: false,
           timer: 5000,
           timerProgressBar: true,
-          // Perbaikan warna latar dan teks
+          // Background and text color fixes
           background: isDark ? "#2d2d2d" : "#ffffff",
           color: isDark ? "#ffffff" : "#000000",
-          // Hapus atau sesuaikan iconColor agar mengikuti warna default SweetAlert (Sukses = Hijau)
+          // Remove or adjust iconColor to follow SweetAlert's default color (Success = Green)
           iconColor: undefined,
           didOpen: (toast) => {
             toast.addEventListener("mouseenter", Swal.stopTimer);
@@ -604,7 +600,7 @@
           },
         });
 
-        // Validasi Input Teks menggunakan Toast
+        // Text Input Validation using Toast
         if (!exchange || !ticker) {
           Toast.fire({
             icon: "error",
@@ -613,7 +609,7 @@
           return;
         }
 
-        // Validasi Checkbox menggunakan Toast
+        // Checkbox Validation using Toast
         if (selectedData.length === 0) {
           Toast.fire({
             icon: "warning",
@@ -622,14 +618,14 @@
           return;
         }
 
-        // --- Logika Targets ---
+        // --- Targets Logic ---
         let allTargets = [];
         if (source === "stockanalysis") {
           exchange = exchange.toLowerCase();
           ticker = ticker.toLowerCase();
 
-          // Tentukan Base URL berdasarkan Exchange
-          // Jika OTC, NASDAQ, atau NYSE, gunakan format /stocks/ticker/
+          // Specify the Base URL based on the Exchange
+          // If OTC, NASDAQ, or NYSE, use the format /stocks/ticker/
           const usExchanges = ["otc", "nasdaq", "nyse", "amex"];
           let baseUrl;
 
@@ -653,8 +649,7 @@
             {
               id: "overview",
               name: "🏢 Overview",
-              // url: `${baseUrl}/company`,
-              url: `https://translate.google.com/translate?sl=en&tl=id&u=${baseUrl}/company`,
+              url: `${baseUrl}/company`,
             },
             {
               id: "history",
@@ -704,8 +699,7 @@
             {
               id: "overview",
               name: "🏢 Overview",
-              // url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
-              url: `https://translate.google.com/translate?sl=en&tl=id&u=https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
+              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
             },
             {
               id: "history",
@@ -742,13 +736,13 @@
 
         const targets = allTargets.filter((t) => selectedData.includes(t.id));
 
-        // Toast Sukses
+        // Toast of Success
         Toast.fire({
           icon: "success",
           title: `Opening ${targets.length} tabs for ${ticker.toUpperCase()}`,
         });
 
-        // Tampilkan Link Manual
+        // Show Manual Link
         document.getElementById("hintText").style.display = "block";
         const container = document.getElementById("linkContainer");
         const list = document.getElementById("linkList");
@@ -763,7 +757,7 @@
           a.innerText = item.name;
           list.appendChild(a);
 
-          // Buka tab otomatis dengan jeda
+          // Auto open tabs with pause
           setTimeout(() => {
             window.open(item.url, "_blank");
           }, index * 250);
@@ -782,7 +776,7 @@
       updatePlaceholders();
 
       function resetForm() {
-        // Deteksi Tema
+        // Theme Detection
         const isDark =
           document.documentElement.getAttribute("data-theme") === "dark";
 
@@ -804,10 +798,10 @@
         document.getElementById("exchange_name").value = "";
         document.getElementById("ticker_symbol").value = "";
 
-        // Reset checkbox (semua checked seperti default awal)
-        toggleAllCheckboxes(true);
+        // Reset checkbox (all checked as initial default)
+        toggleAllCheckboxes(false);
 
-        // Reset radio ke default
+        // Reset radio to default
         document.querySelector(
           'input[name="source"][value="stockanalysis"]',
         ).checked = true;
@@ -815,11 +809,11 @@
         // Update placeholder & casing
         updatePlaceholders();
 
-        // Sembunyikan hasil link
+        // Hide link results
         document.getElementById("linkContainer").style.display = "none";
         document.getElementById("hintText").style.display = "none";
 
-        // Toast notifikasi (auto theme-aware)
+        // Notification toast (auto theme-aware)
         Toast.fire({
           icon: "success",
           title: "Form has been reset",
