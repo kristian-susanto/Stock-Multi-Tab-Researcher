@@ -276,10 +276,10 @@
             ><input type="checkbox" value="news" /> Latest News</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="stats" /> Ratios</label
+            ><input type="checkbox" value="overview" /> Overview</label
           >
           <label class="check-option"
-            ><input type="checkbox" value="overview" /> Overview</label
+            ><input type="checkbox" value="stats" /> Ratios</label
           >
           <label class="check-option"
             ><input type="checkbox" value="history" /> Historical Data</label
@@ -642,14 +642,14 @@
               url: `https://www.google.com/search?q=${exchange}:%20${ticker}&tbm=nws&tbs=sbd:1`,
             },
             {
-              id: "stats",
-              name: "📊 Financial Ratios",
-              url: `${baseUrl}/financials/ratios/?p=quarterly`,
-            },
-            {
               id: "overview",
               name: "🏢 Overview",
               url: `${baseUrl}/company`,
+            },
+            {
+              id: "stats",
+              name: "📊 Financial Ratios",
+              url: `${baseUrl}/financials/ratios/?p=quarterly`,
             },
             {
               id: "history",
@@ -692,14 +692,14 @@
               url: `https://www.google.com/search?q=${exchange}:%20${ticker}&tbm=nws&tbs=sbd:1`,
             },
             {
-              id: "stats",
-              name: "📊 Financial Stats",
-              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-statistics-and-ratios/`,
-            },
-            {
               id: "overview",
               name: "🏢 Overview",
               url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/`,
+            },
+            {
+              id: "stats",
+              name: "📊 Financial Stats",
+              url: `https://www.tradingview.com/symbols/${exchange}-${ticker}/financials-statistics-and-ratios/`,
             },
             {
               id: "history",
